@@ -56,7 +56,7 @@ export default {
 	methods: {
 		addItem(item) {
 			axios({
-				url: "http://localhost:4000",
+				url: "https://namegator-server.herokuapp.com/",
 				method: "post",
 				data: {
 					query: `
@@ -81,7 +81,7 @@ export default {
 		},
 		deleteItem(item) {
 			axios({
-				url: "http://localhost:4000",
+				url: "https://namegator-server.herokuapp.com/",
 				method: "post",
 				data: {
 					query: `
@@ -100,7 +100,7 @@ export default {
 		},
 		getItems(type) {
 			axios({
-				url: "http://localhost:4000",
+				url: "https://namegator-server.herokuapp.com/",
 				method: "post",
 				data: {
 					query: `

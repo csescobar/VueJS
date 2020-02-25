@@ -1,4 +1,7 @@
 const { ApolloServer } = require("apollo-server");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 const typeDefs = `
   type Item {
@@ -51,6 +54,14 @@ const resolvers = {
       }
     }
   }
-const server = new ApolloServer( { typeDefs, resolvers } );
+const server = new ApolloServer( { 
+    typeDefs, 
+    resolvers,
+    introspection: true,
+    playground: true 
+  }
+);
 
-server.listen();
+server.listen({port: process.env.PORT || 4000}, () => 
+  console.log(`http://localhost:${process.env.PORT}${server.graphqlPath}`)
+);
