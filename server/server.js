@@ -1,5 +1,6 @@
 const { ApolloServer } = require("apollo-server");
 const dotenv = require("dotenv");
+const dns = require("dns");
 
 dotenv.config();
 
@@ -8,6 +9,11 @@ const typeDefs = `
     id: Int
     type: String
     description: String
+  }
+  type Domain {
+    name: String
+    checkout: String
+    available: Boolean
   }
   type Query {
     items (type: String): [Item]
@@ -21,6 +27,7 @@ const typeDefs = `
   type Mutation {
     saveItem(item: ItemInput): Item
     deleteItem(id: Int): Boolean
+    generateDomains: [Domain]
   }
   `;
 const items = [
@@ -31,6 +38,18 @@ const items = [
   {id: 5, type: "sufix", description: "Station"},
   {id: 6, type: "sufix", description: "Mart"}
 ]
+
+const isDomainAvailable = function(url) {
+  return new Promise(function(resolve, reject) {
+    dns.resolve(url, function(error) {
+      if(error) {
+        resolve(true);
+      }else {
+        resolve(false);
+      }
+    });
+  });
+};
   
 const resolvers = {
   Query: {
@@ -51,6 +70,23 @@ const resolvers = {
         if (!item) return false;
         items.splice(items.indexOf(item), 1);
         return true;
+      },
+      async generateDomains() {
+        const domains = [];
+        for (const prefix of items.filter(item => item.type === "prefix")) {
+          for (const sufix of items.filter(item => item.type === "sufix")) {
+            const name = prefix.description + sufix.description;
+            const url = name.toLowerCase();
+            const checkout = `https://checkout.hostgator.com.br/?a=add&sld=${url}&tld=.com`;
+            const available = await isDomainAvailable(`${url}.com`);
+            domains.push({
+              name,
+              checkout,
+              available
+            });
+          }
+        }
+        return domains;
       }
     }
   }

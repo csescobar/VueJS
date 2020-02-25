@@ -19,10 +19,14 @@
             <ul class="list-group">
               <li class="list-group-item" v-for="domain in domains" v-bind:key="domain.name" >
                 <div class="row">
-                  <div class="col-md">
-                    {{domain.name}}
-                  </div>
-                  <div class="col-md text-right">
+                  <div class="col-md-6">
+										{{domain.name}}
+									</div>
+									<div class="col-md-3">
+										<span class="badge badge-info">{{(domain.available) ? 
+											"Disponível" : "Não disponível"}}</span> 
+									</div>
+                  <div class="col-md-3 text-right">
                     <a v-bind:href="domain.checkout" target="blank" class="btn btn-info"><span class="fa fa-shopping-cart"></span> </a>
                   </div>
                 </div>
@@ -50,13 +54,14 @@ export default {
 			items: {
 				prefix: [],
 				sufix: []
-			}
+			},
+			domains: []
 		};
 	},
 	methods: {
 		addItem(item) {
 			axios({
-				url: "https://namegator-server.herokuapp.com/",
+				url: "http://localhost:3000", //process.env.URL, //"https://namegator-server.herokuapp.com/",
 				method: "post",
 				data: {
 					query: `
@@ -76,12 +81,13 @@ export default {
 				const query = response.data;
 				const newItem = query.data.newItem;
 				this.items[item.type].push(newItem);
+				this.generateDomains();
 			}) ;
 			
 		},
 		deleteItem(item) {
 			axios({
-				url: "https://namegator-server.herokuapp.com/",
+				url: "http://localhost:3000", //process.env.URL, //"https://namegator-server.herokuapp.com/",
 				method: "post",
 				data: {
 					query: `
@@ -94,13 +100,14 @@ export default {
 					}
 				}
 			}).then(() => {
-				this.getItems(item.type);
+				this.items[item.type].splice(this.items[item.type].indexOf(item), 1);
+				this.generateDomains();
 			});
 			
 		},
 		getItems(type) {
-			axios({
-				url: "https://namegator-server.herokuapp.com/",
+			return axios({
+				url:  "http://localhost:3000", //process.env.URL, //"https://namegator-server.herokuapp.com/",
 				method: "post",
 				data: {
 					query: `
@@ -120,30 +127,36 @@ export default {
 				const query = response.data;
 				this.items[type] = query.data.items;
 			});
-		}
-	},
-	computed: {
-		domains() {
+		},
+		generateDomains() {
 			console.log("generating domains...");
-			const domains = [];
-			for (const prefix of this.items.prefix) {
-				for (const sufix of this.items.sufix) {
-					const name = prefix.description + sufix.description;
-					const url = name.toLowerCase();
-					const checkout = `https://checkout.hostgator.com.br/?a=add&sld=${url}&tld=.com`;
-					domains.push({
-						name,
-						checkout
-					});
+			axios ({
+				url: "http://localhost:3000",
+				method: "post",
+				data: {
+					query: `
+						mutation {
+							domains: generateDomains {
+								name
+								checkout
+								available
+							}
+						}
+					`
 				}
-			}
-			return domains;
+			}).then((response) => {
+				const query = response.data;
+				this.domains = query.data.domains;
+			});
 		}
 	},
 	created() {
-		console.log("created");
-		this.getItems("prefix");
-		this.getItems("sufix");
+		Promise.all([
+			this.getItems("prefix"),
+			this.getItems("sufix")
+		]).then(() => {
+			this.generateDomains();
+		});
 	}
 };
 </script>
