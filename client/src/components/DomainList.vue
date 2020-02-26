@@ -14,8 +14,8 @@
         </div>
         <br>
         <h5>Domínios <span class="badge badge-info" >{{domains.length}} </span> </h5>
-        <div class="card"></div>
-          <div class="card-body">
+        <div class="card">
+					<div class="card-body">
             <ul class="list-group">
               <li class="list-group-item" v-for="domain in domains" v-bind:key="domain.name" >
                 <div class="row">
@@ -28,11 +28,16 @@
 									</div>
                   <div class="col-md-3 text-right">
                     <a v-bind:href="domain.checkout" target="blank" class="btn btn-info"><span class="fa fa-shopping-cart"></span> </a>
-                  </div>
+										&nbsp;
+										<button class="btn btn-info" @click="openDomain(domain)">
+											<span class="fa fa-search"></span>
+										</button>
+									</div>
                 </div>
               </li>
             </ul>
           </div>
+				</div>
       </div>
     </div>
   </div>
@@ -148,6 +153,11 @@ export default {
 				const query = response.data;
 				this.domains = query.data.domains;
 			});
+		},
+		openDomain(domain) {
+			this.$router.push({
+				path: `/domains/${domain.name}`
+			})
 		}
 	},
 	created() {
