@@ -105,7 +105,6 @@ const resolvers = {
             available
           });
         }
-        console.log(name);
         return domains;
       }
     }
