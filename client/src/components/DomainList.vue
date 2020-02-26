@@ -61,7 +61,7 @@ export default {
 	methods: {
 		addItem(item) {
 			axios({
-				url: "http://localhost:3000", //process.env.URL, //"https://namegator-server.herokuapp.com/",
+				url: process.env.VUE_APP_URL, //"https://namegator-server.herokuapp.com/", //"http://localhost:3000", //process.env.URL, //"https://namegator-server.herokuapp.com/",
 				method: "post",
 				data: {
 					query: `
@@ -87,7 +87,7 @@ export default {
 		},
 		deleteItem(item) {
 			axios({
-				url: "http://localhost:3000", //process.env.URL, //"https://namegator-server.herokuapp.com/",
+				url: process.env.VUE_APP_URL, //"https://namegator-server.herokuapp.com/", //"http://localhost:3000", //process.env.URL, //"https://namegator-server.herokuapp.com/",
 				method: "post",
 				data: {
 					query: `
@@ -107,7 +107,7 @@ export default {
 		},
 		getItems(type) {
 			return axios({
-				url:  "http://localhost:3000", //process.env.URL, //"https://namegator-server.herokuapp.com/",
+				url: process.env.VUE_APP_URL, //"https://namegator-server.herokuapp.com/", //"http://localhost:3000", //process.env.URL, //
 				method: "post",
 				data: {
 					query: `
@@ -131,7 +131,7 @@ export default {
 		generateDomains() {
 			console.log("generating domains...");
 			axios ({
-				url: "http://localhost:3000",
+				url: process.env.VUE_APP_URL, //"https://namegator-server.herokuapp.com/", //"http://localhost:3000",
 				method: "post",
 				data: {
 					query: `
