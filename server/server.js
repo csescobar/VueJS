@@ -56,6 +56,7 @@ const isDomainAvailable = function(url) {
 const resolvers = {
   Query: {
     items(_, args) {
+      console.log("getItems ", args.type);
       return items.filter(item => item.type === args.type);
     }
     },
@@ -74,6 +75,7 @@ const resolvers = {
         return true;
       },
       async generateDomains() {
+        console.log("generateDomains");
         const domains = [];
         for (const prefix of items.filter(item => item.type === "prefix")) {
           for (const sufix of items.filter(item => item.type === "sufix")) {
