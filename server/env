@@ -1,0 +1,2 @@
+PORT=3000
+CONNECT=mongodb+srv://omnistack:omnistack@cluster0-vlxex.mongodb.net/namegator?retryWrites=true&w=majority
