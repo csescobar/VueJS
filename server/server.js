@@ -8,7 +8,7 @@ dotenv.config();
 
 mongoose.set("useCreateIndex", true);
 
-mongoose.connect("mongodb+srv://omnistack:omnistack@cluster0-vlxex.mongodb.net/namegator?retryWrites=true&w=majority", {
+mongoose.connect(process.env.CONNECT, {
   useNewUrlParser: true,
   useUnifiedTopology: true
 });
