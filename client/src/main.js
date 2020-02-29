@@ -60,6 +60,7 @@ const store = new Vuex.Store({
 			}).then(response => {
 				const query = response.data;
 				const newItem = query.data.newItem;
+				
 				context.commit("addItem", {item, newItem});
 				context.dispatch("generateDomains");
 			}) ;
@@ -71,7 +72,7 @@ const store = new Vuex.Store({
 				method: "post",
 				data: {
 					query: `
-						mutation ($id: Int) {
+						mutation ($id: String) {
 							deleteItem(id: $id)
 						}
 					`,
